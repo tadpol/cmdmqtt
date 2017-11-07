@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'commander/import'
+require 'CmdMqtt'
+
+Signal.trap('INT', 'EXIT') # Don't drop traces on ^C
+
+program :version, CmdMqtt::VERSION
+program :description, %{command lime mqtt with SNI OMG!}
+
+default_command :help
+
+global_option('-V', '--verbose', 'Be chatty') {
+  $cfg['tool.verbose'] = true
+}
+#global_option('-n', '--dry', "Don't run actions that make changes") {
+#  $cfg['tool.dry'] = true
+#  $cfg['tool.verbose'] = true # dry implies verbose
+#}
+global_option('-C', '--configfile FILE', %{Load additional configuration file}) {|file|
+  # this is called after all of the top level code in this file.
+  $cfg.load_specific(file)
+}
+global_option('-c', '--config KEY=VALUE', %{Set a single config key}) {|param|
+  key, value = param.split('=', 2)
+  # a=b :> ["a","b"]
+  # a= :> ["a",""]
+  # a :> ["a"]
+  raise "Bad config '#{param}'" if key.nil?
+  if value.nil? then
+    $cfg[key] = 'true'
+  else
+    $cfg[key] = value
+  end
+}
+global_option('-h', '--host HOSTNAME', 'MQTT Host') {|param|
+  $cfg['net.host'] = param
+}
+global_option('-p', '--port POST', 'MQTT Port') {|param|
+  $cfg['net.port'] = param
+}
+global_option('-u', '--username USERNAME', 'MQTT username') {|param|
+  $cfg['mqtt.user'] = param
+}
+global_option('-P', '--password PASSWORD', 'MQTT Password') {|param|
+  $cfg['mqtt.password'] = param
+}
+
+$cfg = CmdMqtt::Config.new
+$cfg.load
+
+
+#  vim: set ai et sw=2 ts=2 :
