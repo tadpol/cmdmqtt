@@ -37,7 +37,7 @@ global_option('-c', '--config KEY=VALUE', %{Set a single config key}) {|param|
 global_option('-h', '--host HOSTNAME', 'MQTT Host') {|param|
   $cfg['net.host'] = param
 }
-global_option('-p', '--port POST', 'MQTT Port') {|param|
+global_option('-p', '--port PORT', 'MQTT Port') {|param|
   $cfg['net.port'] = param
 }
 global_option('-u', '--username USERNAME', 'MQTT username') {|param|
